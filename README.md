@@ -1,6 +1,6 @@
 # RMA-Net
 
-This repo is the code of the paper: Recurrent Multi-view Alignment Network for Unsupervised Surface Registration (CVPR 2021). Some files and source code are not uploaded yet, but they will be released very soon.
+This repo is the implementation of the paper: Recurrent Multi-view Alignment Network for Unsupervised Surface Registration (CVPR 2021). 
 
 Paper address: [https://arxiv.org/abs/2011.12104](https://arxiv.org/abs/2011.12104)
 
@@ -16,38 +16,50 @@ The code has been tested with Python3.8, PyTorch 1.6 and Cuda 10.2:
     conda install pytorch=1.6.0 torchvision=0.7.0 cudatoolkit=10.2 -c pytorch
     conda install -c conda-forge igl
 
+Other requirements include: [eigen3](https://eigen.tuxfamily.org/index.php?title=Main_Page), [Openmesh](https://www.graphics.rwth-aachen.de/software/openmesh/) and [MeshlabServer](https://www.meshlab.net/).
+
+Build the cuda extension:
+
+    python build_cuda.py
+
+
 ## Usage
 
 ### Pre-trained Models
-Download the [pre-trained models](https://none) and put them in the *[YourProjectPath]/pre_trained* folder. 
+Download the [pre-trained models](https://wanquanf.github.io/rmanet_pretrained.html) and put the models in the *[YourProjectPath]/pre_trained* folder. 
 
 ### Run the registration
 To run registration for a single sample, you can run:
 
-    code for registration a single sample
+    python inference.py --weight [pretrained-weight-path] --src [source-obj-path] --tgt [target-obj-path] --iteration [iteration-number] --device_id [gpu-id] --if_nonrigid [1 or 0]
 
-The results are listed in the folder named *XXX_results*, including the deforming results of different stages. We have given a collection of samples in *[YourProjectPath]/samples*, and you can run the registration for them by:
+The last argument *--if_nonrigid* represents if the translation between the source and target is non-rigid (1) or rigid (0). Registration results are listed in the folder named *source_deform_results*, including the deforming results of different stages. We have given a collection of samples in *[YourProjectPath]/samples*, and you can run the registration for them by:
     
-    code for registration a collection of samples
+    sh inference_samples.sh
 
 
 ### Datasets
-To show how to construct a dataset that can be used in the code, we list some toy pairs
-in the *[YourProjectPath]/toy_dataset* folder and give a script to pack them into a bin file:
+To show how to construct a dataset that can be used in the code, we give a sample script that constructs a toy dataset that can construct the packed dataset.
+Firstly, build the code for ACAP interpolation (you should change the include/lib path in the *[YourProjectPath]/data/sample_data/code_for_converting_seed_to_dataset/vertex2acap/CMakelists.txt*):
 
-    code for constructing a dataset
+    cd [YourProjectPath]/data/sample_data/code_for_converting_seed_to_dataset/vertex2acap
+    python build_acap.py
 
-Or you can also download the dataset we used in the paper [here](https://none).
+Then, download some [seed data](https://wanquanf.github.io/seed_data.html) into the *[YourProjectPath]/data/sample_data/seed* folder, and then convert the seed data into a packed dataset (you should change the *meshlabserver* path in *[YourProjectPath]/data/sample_data/code_for_converting_seed_to_dataset/sample_points_for_one_mesh.py*):
 
-### Train & Test
-To test on the whole testing set, run:
+    cd [YourProjectPath]/data/sample_data/code_for_converting_seed_to_dataset
+    python convert_seed_to_dataset.py
 
-    code for testing on the whole dataset
+For simplicity, you can also directly download the constructed [packed dataset](https://wanquanf.github.io/packed_dataset.html) into *[YourProjectPath]/data/sample_data/code_for_converting_seed_to_dataset/packed_data*.
 
-To train the network, run:
 
-    code for training the network
+### Train with the dataset
+To train with the constructed dataset:
 
+    cd [YourProjectPath]/model
+    python train_sample.py
+
+The settings (the weights of the loss terms, the dataset, etc) of the training process can also be adjusted in the *train_sample.py*. The training results are saved in cd *[YourProjectPath]/model/results*.
 
 
 
@@ -61,3 +73,5 @@ Please cite this paper with the following bibtex:
         year      = {2021}
     }
 
+## Acknowledgement
+In this repo, we borrowed a lot from [DCP](https://github.com/WangYueFt/dcp) and [Raft](https://github.com/princeton-vl/RAFT).
