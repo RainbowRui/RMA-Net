@@ -9,7 +9,7 @@ Project webpage: [https://wanquanf.github.io/RMA-Net.html](https://wanquanf.gith
 ![avatar](./images/teaser_version3_low.png)
 
 ## Prerequisite Installation
-The code has been tested with Python3.8, PyTorch 1.6 and Cuda 10.2:
+The code has been tested with Python 3.8, PyTorch 1.6 and Cuda 10.2:
 
     conda create --name rmanet
     conda activate rmanet
@@ -41,7 +41,7 @@ The last argument *--if_nonrigid* represents if the translation between the sour
 ### Datasets
 The dataset used in our paper can be downloaded [here](https://wanquanf.github.io/rmanet_datasets.html).
 
-Or you can also construct your the dataset that can be used in the code. To show how to construct a dataset that can be used in the code, we give a sample script that constructs a toy dataset that can construct the packed dataset.
+Or you can also construct your dataset that can be used in our code. To show how to construct a dataset that can be used in the code, we give a sample script that constructs a toy dataset that can construct the packed dataset.
 Firstly, build the code for ACAP interpolation (you should change the include/lib path in the *[YourProjectPath]/data/sample_data/code_for_converting_seed_to_dataset/vertex2acap/CMakelists.txt*):
 
     cd [YourProjectPath]/data/sample_data/code_for_converting_seed_to_dataset/vertex2acap
